@@ -1,0 +1,11 @@
+{
+  "extends": "airbnb-base",
+  "rules": {
+    "comma-dangle": "off",
+    "global-require": "off",
+    "import/no-unresolved": "off",
+    "prefer-destructuring": "off",
+    "no-param-reassign": "off",
+    "no-console": "off"
+  }
+}
