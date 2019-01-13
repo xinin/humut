@@ -8,12 +8,11 @@
     "lint": "eslint server"
   },
   "devDependencies": {
-    "eslint": "latest",
-    "eslint-config-standard": "latest",
-    "eslint-plugin-promise": "latest",
-    "eslint-plugin-standard": "latest",
+    "eslint": "^5.2.0",
+    "eslint-config-airbnb": "latest",
     "eslint-plugin-import": "latest",
-    "eslint-config-airbnb-base": "latest"
+    "eslint-plugin-jsx-a11y": "latest",
+    "eslint-plugin-react": "latest"
   },
   "dependencies": {
     "crawler": "latest"
