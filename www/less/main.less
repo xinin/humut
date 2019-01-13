@@ -1,0 +1,80 @@
+@import "variables.less";
+@import "mixins.less";
+
+// Global Components
+.container {
+  max-width: 100%;
+  min-width: 100%;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  .serif-font;
+  background-color: @theme-primary;
+  a {
+    color: @theme-secondary;
+    &:hover {
+      text-decoration: none;
+      color: @theme-secondary;
+    }
+  };
+}
+
+nav{
+  background-color: @theme-secondary;
+  color: @theme-primary;
+  a.navbar-brand, a.nav-link {
+    color: @theme-primary;
+    &:hover {
+      text-decoration: none;
+      color: @theme-primary;
+    }
+  };
+}
+
+#afterNav{
+  margin-top: 50px;
+}
+
+.cookiealert {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0 !important;
+  z-index: 999;
+  opacity: 0;
+  border-radius: 0;
+  transform: translateY(100%);
+  transition: all 500ms ease-out;
+  color: #ecf0f1;
+  background: #212327;
+}
+
+.cookiealert.show {
+  opacity: 1;
+  transform: translateY(0%);
+  transition-delay: 1000ms;
+}
+
+.cookiealert a {
+  text-decoration: underline
+}
+
+.cookiealert .acceptcookies {
+  margin-left: 10px;
+  vertical-align: baseline;
+}
+
+h1#bestseller-title{
+  color: @theme-primary;
+  background-color: @theme-secondary;
+  font-size: larger;
+}
+
+#info{
+  background: @theme-secondary;
+  color: @theme-primary;
+}

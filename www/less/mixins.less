@@ -1,0 +1,31 @@
+// Mixins
+
+.transition-all() {
+    -webkit-transition: all 0.35s;
+    -moz-transition: all 0.35s;
+    transition: all 0.35s;
+}
+
+.background-cover() {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+.sans-serif-font() {
+	font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.serif-font() {
+	font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.loopingClass (@index) when (@index > 0){
+    .pd-@{index}{
+      padding-left: @index px;
+      padding-right: @index px;
+    }
+    .loopingClass(@index - 1);
+  }
+.loopingClass(15);

@@ -1,0 +1,4 @@
+_scripts
+node_modules
+**/*.js
+*.js
