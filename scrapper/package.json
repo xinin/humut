@@ -15,10 +15,8 @@
     "eslint-plugin-react": "latest"
   },
   "dependencies": {
-    "casperjs": "^1.1.4",
     "cheerio": "^1.0.0-rc.2",
-    "crawler": "latest",
-    "phantom": "^6.0.3",
-    "puppeteer": "^1.11.0"
+    "puppeteer": "^1.11.0",
+    "queue": "^5.0.0"
   }
 }

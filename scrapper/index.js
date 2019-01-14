@@ -1,5 +1,15 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+const queue = require('queue');
+
+const FAILED = -1;
+const WAITING = 0;
+const RUNNING = 1;
+const DONE = 2;
+
+const pages = {
+  'SUNLU-Filament-Dimensional-Accuracy-Printing/dp/B073PB9XWY': WAITING,
+};
 
 const AMAZON_URI = 'https://www.amazon.es/';
 
@@ -12,13 +22,17 @@ const cleanUri = (uri) => {
   return u;
 };
 
-(async () => {
+const crawl = async (uri, list) => {
+  console.log(`SCANNING ${uri}`);
+
+  list[uri] = RUNNING;
+
   const browser = await puppeteer.launch();
 
   const page = await browser.newPage();
   await page.setViewport({ height: 3000, width: 600 });
 
-  await page.goto(`${AMAZON_URI}SUNLU-Filament-Dimensional-Accuracy-Printing/dp/B073PB9XWY`);
+  await page.goto(`${AMAZON_URI}${uri}`);
   await page.evaluate(() => window.scrollBy(0, window.innerHeight));
   await page.waitFor(1000);
 
@@ -53,10 +67,40 @@ const cleanUri = (uri) => {
     data.related.push(cleanUri(href));
   });
 
-  console.log(JSON.stringify(data));
+  // console.log(JSON.stringify(data));
 
   await browser.close();
-})();
+  return data;
+};
 
+const add = (q, item, list) => new Promise((async (resolve) => {
+  const crawled = await crawl(item, list);
 
-// anonCarousel3
+  const { id, related } = crawled;
+
+  console.log(`SCANNED ${id}`);
+
+  list[id] = DONE;
+  related.forEach((r) => {
+    if (list[r] === undefined || list[r] === null) {
+      list[r] = WAITING;
+      q.push(add(q, r, list));
+    }
+  });
+
+  resolve(crawled);
+}));
+
+const main = async () => {
+  const q = queue({ concurrency: 2 });
+
+  q.on('success', (result, job) => {
+    console.log('job finished processing:', job.toString().replace(/\n/g, ''));
+  });
+
+  Object.keys(pages).forEach((key) => {
+    q.push(add(q, key, pages));
+  });
+};
+
+main();
