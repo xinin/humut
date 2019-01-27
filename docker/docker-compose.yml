@@ -1,0 +1,8 @@
+version: '3.2'
+services:
+  worker:
+    container_name: hummut_coordinator
+    build: "./coordinator"
+    ports:
+      - "9000:9000"
+
