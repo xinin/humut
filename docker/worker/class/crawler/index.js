@@ -25,7 +25,7 @@ const crawl = async (uri) => {
     // data.id = cleanUri(page.url());
     data.updated = Date.now();
     data.title = $('#productTitle').text().trim();
-    data.keywords = $('head > meta[name=keywords]').attr('content').split(',');
+    data.keywords = $('head > meta[name=keywords]').attr('content').split(',') || [];
     data.image = $('#landingImage').attr('data-old-hires');
     data.price = $('#priceblock_ourprice').text().replace('EUR ', '');
     data.rate = ($('#acrPopover').attr('title')) ? $('#acrPopover').attr('title').match(/[^\s]+/)[0] : 0;

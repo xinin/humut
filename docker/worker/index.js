@@ -1,7 +1,8 @@
+process.env['config'] = JSON.stringify(require('./config.json'));
+
 const PromiseBlue = require('bluebird');
 
 const { crawl } = require('./class/crawler');
-
 const { getItems, pushItems } = require('./class/utils');
 
 const concurrency = 1;
@@ -25,7 +26,7 @@ const execute = lastKey => new Promise(async (resolve, reject) => {
 const start = async () => {
   let lastKey;
   while (true) {
-    console.log('-------------');
+    console.log('----- ' + lastKey + ' -----');
     lastKey = await execute(lastKey);
     console.log('-------------');
   }

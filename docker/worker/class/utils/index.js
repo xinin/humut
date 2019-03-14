@@ -1,7 +1,7 @@
 const request = require('request');
 
 const AMAZON_URI = 'https://www.amazon.es/';
-const COORDINATOR_URI = 'http://localhost:9000';
+const COORDINATOR_URI = JSON.parse(process.env['config']).coordinator.uri;
 
 const cleanUri = (uri) => {
   let u = uri;
