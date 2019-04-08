@@ -1,7 +1,7 @@
 const request = require('request');
 
 const AMAZON_URI = 'https://www.amazon.es/';
-const COORDINATOR_URI = JSON.parse(process.env['config']).coordinator.uri;
+const COORDINATOR_URI = JSON.parse(process.env.config).coordinator.uri;
 
 const cleanUri = (uri) => {
   let u = uri;
@@ -22,7 +22,7 @@ const getItems = lastKey => new Promise((resolve, reject) => {
   const options = {
     url: (lastKey) ? `${COORDINATOR_URI}/?lastKey=${lastKey}` : `${COORDINATOR_URI}/`,
   };
-  console.log(options);
+  // console.log(options);
   try {
     request(options, (error, response, body) => {
       if (!error && response.statusCode === 200) {

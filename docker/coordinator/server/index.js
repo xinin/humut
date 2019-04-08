@@ -28,6 +28,10 @@ const items = [
   'Hama-108884-Adaptador-enchufe-el%C3%A9ctrico/dp/B00EJLTNAY/',
 ];
 
+app.get('/status', (req, res) => {
+  res.status(202).send();
+});
+
 app.get('/', (req, res) => {
   const { lastKey } = req.query;
   console.log('lastKey', lastKey);

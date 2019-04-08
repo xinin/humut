@@ -9,9 +9,19 @@ const crawl = async (uri) => {
   try {
     console.log(`SCANNING ${uri}`);
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 
     const page = await browser.newPage();
+
+    page.on('response', (response) => {
+      const request = response.request();
+      const url = request.url();
+      const status = response.status();
+      if (url === AMAZON_URI + uri && status === 404) {
+        console.log('response url:', url, 'status:', status);
+      }
+    });
+
     await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/67.0.3372.0 Safari/537.36');
     await page.setViewport({ height: 3000, width: 600 });
 
@@ -20,12 +30,15 @@ const crawl = async (uri) => {
     await page.waitFor(1000);
 
     const content = await page.content();
-
     const $ = cheerio.load(content);
     // data.id = cleanUri(page.url());
     data.updated = Date.now();
     data.title = $('#productTitle').text().trim();
-    data.keywords = $('head > meta[name=keywords]').attr('content').split(',') || [];
+    try {
+      data.keywords = $('head > meta[name=keywords]').attr('content').split(',');
+    } catch (e) {
+      data.keywords = [];
+    }
     data.image = $('#landingImage').attr('data-old-hires');
     data.price = $('#priceblock_ourprice').text().replace('EUR ', '');
     data.rate = ($('#acrPopover').attr('title')) ? $('#acrPopover').attr('title').match(/[^\s]+/)[0] : 0;

@@ -1,5 +1,5 @@
 {
     "coordinator": {
-        "uri": "http://172.16.2.99:9000"
+        "uri": "http://localhost:9000"
     }
 }
