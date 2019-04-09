@@ -1,7 +1,13 @@
 const request = require('request');
 
 const AMAZON_URI = 'https://www.amazon.es/';
-const COORDINATOR_URI = JSON.parse(process.env.config).coordinator.uri;
+
+const loadConfig = (c) => {
+  const conf = c;
+  if (process.env.COORDINATOR_HOST) conf.coordinator.uri = process.env.COORDINATOR_HOST;
+  process.env.config = JSON.stringify(conf);
+  return conf;
+};
 
 const cleanUri = (uri) => {
   let u = uri;
@@ -19,6 +25,8 @@ const cleanUri = (uri) => {
 };
 
 const getItems = lastKey => new Promise((resolve, reject) => {
+  const COORDINATOR_URI = JSON.parse(process.env.config).coordinator.uri;
+
   const options = {
     url: (lastKey) ? `${COORDINATOR_URI}/?lastKey=${lastKey}` : `${COORDINATOR_URI}/`,
   };
@@ -38,6 +46,8 @@ const getItems = lastKey => new Promise((resolve, reject) => {
 });
 
 const pushItems = items => new Promise((resolve, reject) => {
+  const COORDINATOR_URI = JSON.parse(process.env.config).coordinator.uri;
+
   const options = {
     url: `${COORDINATOR_URI}/`,
     method: 'POST',

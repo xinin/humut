@@ -1,17 +1,9 @@
-const PromiseBlue = require('bluebird');
 
-// TODO Mirar esta parte y ordenarla
-const loadConfig = (c) => {
-  const conf = c;
-  if (process.env.COORDINATOR_HOST) conf.coordinator.uri = process.env.COORDINATOR_HOST;
-  process.env.config = JSON.stringify(conf);
-  return conf;
-};
+const PromiseBlue = require('bluebird');
+const { crawl } = require('./class/crawler');
+const { getItems, pushItems, loadConfig } = require('./class/utils');
 
 loadConfig(require('./config.json'));
-
-const { crawl } = require('./class/crawler');
-const { getItems, pushItems } = require('./class/utils');
 
 const concurrency = 1;
 
