@@ -73,4 +73,5 @@ module.exports = {
   cleanUri,
   getItems,
   pushItems,
+  loadConfig,
 };
