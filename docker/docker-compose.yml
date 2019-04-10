@@ -5,26 +5,33 @@ services:
     build: "./coordinator"
     ports:
       - "9000:9000"
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
     networks:
       humut-network:
         ipv4_address: 172.16.2.99
-  worker1:
-    container_name: hummut_worker1
-    build: "./worker"
-    ports:
-      - "9001:9000"
-    environment:
-      - COORDINATOR_HOST=http://172.16.2.99:9000
-    networks:
-      humut-network:
-        ipv4_address: 172.16.2.4
+#  worker1:
+#    container_name: hummut_worker1
+#    build: "./worker"
+#    ports:
+#      - "9001:9000"
+#    environment:
+#      - COORDINATOR_HOST=http://172.16.2.99:9000
+#    networks:
+#      humut-network:
+#        ipv4_address: 172.16.2.4
 #  worker2:
 #    container_name: hummut_worker2
 #    build: "./worker"
 #    ports:
 #       - "9002:9000"
-#     environment:
-#       - COORDINATOR_HOST=http://172.16.2.99:9000
+#    environment:
+#      - COORDINATOR_HOST=http://172.16.2.99:9000
+#      - AWS_ACCESS_KEY_ID
+#      - AWS_SECRET_ACCESS_KEY
+#      - AWS_SESSION_TOKEN
 #     networks:
 #       humut-network:
 #         ipv4_address: 172.16.2.3

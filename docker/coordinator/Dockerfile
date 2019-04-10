@@ -1,24 +1,14 @@
-FROM centos:7
+FROM humut:latest
 
 WORKDIR /app
 
-ARG vNode='v10.13.0'
+################################## APP SETUP ##################################
 
 COPY . .
-
-################################## NODE JS ##################################
-# Install Node
-RUN curl "http://nodejs.org/dist/${vNode}/node-${vNode}-linux-x64.tar.gz" -o "node.tar.gz"
-RUN tar --strip-components 1 -xzvf node.tar.gz -C /usr/local
+#RUN rm -rf /app/node_modules
 
 # Install packages required
 RUN npm i
-
-################################## CHECK ##################################
-# Check Install
-RUN echo '🛠 Instaled Software Versions'
-RUN node -v
-RUN npm -v
 
 ################################## ENTRYPOINT ##################################
 COPY entrypoint.sh /usr/local/bin/
@@ -26,7 +16,6 @@ RUN chmod 775 /usr/local/bin/entrypoint.sh
 ENTRYPOINT [ "entrypoint.sh" ]
 
 EXPOSE 9000
-
 
 
 
