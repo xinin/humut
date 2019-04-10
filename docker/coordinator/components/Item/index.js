@@ -1,3 +1,16 @@
+const AWS = require('aws-sdk');
+
+const dynamodb = new AWS.DynamoDB({
+  endpoint: (process.env.DYNAMO_HOST) ? new AWS.Endpoint(process.env.DYNAMO_HOST) : null,
+});
+
+const test = () => new Promise((resolve, reject) => {
+  dynamodb.listTables({}, (err, data) => {
+    if (err) {
+      console.log(err, err.stack); reject(err);
+    } else { console.log(data); resolve(data); } // successful response
+  });
+});
 
 const getItems = () => {
   // TODO query to DynamoDB
@@ -17,4 +30,6 @@ const updateItem = () => {
 
 module.exports = {
   getItems,
+  updateItem,
+  test,
 };

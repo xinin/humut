@@ -1,6 +1,8 @@
 const Item = require('./../../../components/Item');
 
-exports.get = (req, res) => {
+exports.get = async (req, res) => {
+  const tables = await Item.test();
+  console.log(tables);
   const items = Item.getItems();
   const { lastKey } = req.query;
   console.log('lastKey', lastKey);

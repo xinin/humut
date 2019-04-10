@@ -8,14 +8,12 @@ loadConfig(require('./config.json'));
 const concurrency = 1;
 
 const aux = async (item) => {
-  let data;
   try {
-    data = await crawl(item);
+    return (await crawl(item));
   } catch (e) {
     console.log(`ERR on ${item}`);
-    data = e;
+    return e;
   }
-  return data;
 };
 
 const execute = lastKey => new Promise(async (resolve, reject) => {
