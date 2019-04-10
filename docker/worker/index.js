@@ -7,13 +7,23 @@ loadConfig(require('./config.json'));
 
 const concurrency = 1;
 
+const aux = async (item) => {
+  let data;
+  try {
+    data = await crawl(item);
+  } catch (e) {
+    console.log(`ERR on ${item}`);
+    data = e;
+  }
+  return data;
+};
 
 const execute = lastKey => new Promise(async (resolve, reject) => {
   try {
     // console.log('getItems', lastKey);
     const { items, lastKey: LK } = await getItems(lastKey);
     // console.log('items', items, 'LK', lastKey);
-    const crawled = await PromiseBlue.map(items, crawl, { concurrency });
+    const crawled = await PromiseBlue.map(items, aux, { concurrency });
     // console.log(crawled);
     await pushItems(crawled);
     resolve(LK);

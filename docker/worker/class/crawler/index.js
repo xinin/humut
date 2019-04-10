@@ -3,22 +3,31 @@ const cheerio = require('cheerio');
 
 const { cleanUri, AMAZON_URI } = require('../utils');
 
-const crawl = async (uri) => {
+const crawl = uri => new Promise(async (resolve, reject) => {
   const data = { id: uri };
-
   try {
-    console.log(`SCANNING ${uri}`);
-
     const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-
     const page = await browser.newPage();
+    await page.setRequestInterception(true);
+
+    page.on('request', (request) => {
+      if (['image', 'stylesheet', 'font'].indexOf(request.resourceType()) !== -1) {
+        request.abort();
+      } else {
+        request.continue();
+      }
+    });
 
     page.on('response', (response) => {
       const request = response.request();
       const url = request.url();
       const status = response.status();
-      if (url === AMAZON_URI + uri && status === 404) {
+
+      if (url === AMAZON_URI + uri) {
         console.log('response url:', url, 'status:', status);
+        if (status === 404) {
+          reject(data);
+        }
       }
     });
 
@@ -31,7 +40,6 @@ const crawl = async (uri) => {
 
     const content = await page.content();
     const $ = cheerio.load(content);
-    // data.id = cleanUri(page.url());
     data.updated = Date.now();
     data.title = $('#productTitle').text().trim();
     try {
@@ -62,12 +70,12 @@ const crawl = async (uri) => {
       data.related.push(cleanUri(href));
     });
     await browser.close();
-    return data;
+    resolve(data);
   } catch (e) {
     console.log('EXCEPTION', e);
-    return data;
+    reject(data);
   }
-};
+});
 
 module.exports = {
   crawl,
