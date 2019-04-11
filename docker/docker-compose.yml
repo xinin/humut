@@ -3,8 +3,13 @@ services:
   dynamo:
     container_name: humut-dynamo-local
     image: amazon/dynamodb-local
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
     ports:
       - "8000:8000"
+    volumes:
+      - type: bind
+        source: /usr/local/var/dynamo
+        target: /home/dynamodblocal/data/
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
