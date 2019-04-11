@@ -1,8 +1,11 @@
 const AWS = require('aws-sdk');
 
-const dynamodb = new AWS.DynamoDB({
-  endpoint: (process.env.DYNAMO_HOST) ? new AWS.Endpoint(process.env.DYNAMO_HOST) : null,
+AWS.config.update({
+  region: 'eu-west-1',
+  endpoint: (process.env.DYNAMO_HOST) ? process.env.DYNAMO_HOST : null,
 });
+
+const dynamodb = new AWS.DynamoDB();
 
 const test = () => new Promise((resolve, reject) => {
   dynamodb.listTables({}, (err, data) => {
