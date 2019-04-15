@@ -12,14 +12,13 @@
   "dependencies": {
     "aws-sdk": "^2.437.0",
     "body-parser": "^1.18.3",
-    "cheerio": "latest",
     "compression": "^1.7.3",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",
     "helmet": "^3.15.0",
     "method-override": "^3.0.0",
-    "puppeteer": "latest",
+    "nodemon": "^1.18.11",
     "querystring": "^0.2.0",
-    "uniqid": "latest"
+    "uniqid": "^5.0.3"
   }
 }
