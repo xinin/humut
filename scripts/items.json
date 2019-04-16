@@ -1,0 +1,49 @@
+{
+    "Item": [
+        {
+            "PutRequest": {
+                "Item": {
+                    "url": {
+                        "S": "kwmobile-Enchufe-Adaptador-UK-EU-Adaptadores/dp/B07GS6H4MK/"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "url": {
+                        "S": "LAND-FOX-Vestidos-Chaleco-Camisetas-Camisas/dp/B07CBHWPJ5/"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "url": {
+                        "S": "POLP-Beb%C3%A9-Monos-Vaqueros-Fotografia/dp/B07H1DYSTK/"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "url": {
+                        "S": "Enchufe-Inteligente-OxaOxe-Control-Temporizador/dp/B07KP7CXZ3/"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "url": {
+                        "S": "Hama-108884-Adaptador-enchufe-el%C3%A9ctrico/dp/B00EJLTNAY/"
+                    }
+                }
+            }
+        }
+    ]
+}

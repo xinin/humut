@@ -9,6 +9,13 @@ done
 
 echo "🐋  Starting ..."
 
-node index.js
+if [ ! -z "$ISLOCAL" ];
+then
+    echo "NODEMON"
+    npm i -g nodemon
+    nodemon index.js
+else
+    node index.js
+fi
 
 exit 0;

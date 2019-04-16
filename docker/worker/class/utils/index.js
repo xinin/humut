@@ -5,6 +5,8 @@ const AMAZON_URI = 'https://www.amazon.es/';
 const loadConfig = (c) => {
   const conf = c;
   if (process.env.COORDINATOR_HOST) conf.coordinator.uri = process.env.COORDINATOR_HOST;
+  if (process.env.WORKER_NUM) conf.worker.num = process.env.WORKER_NUM;
+
   process.env.config = JSON.stringify(conf);
   return conf;
 };
@@ -26,10 +28,11 @@ const cleanUri = (uri) => {
 
 const getItems = lastKey => new Promise((resolve, reject) => {
   const COORDINATOR_URI = JSON.parse(process.env.config).coordinator.uri;
+  const SEGMENT = JSON.parse(process.env.config).worker.num;
 
   const options = {
     url: `${COORDINATOR_URI}/item`,
-    qs: { lastKey },
+    qs: { lastKey, segment: SEGMENT },
   };
   // console.log(options);
   try {

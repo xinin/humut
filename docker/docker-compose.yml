@@ -1,22 +1,22 @@
 version: '3.2'
 services:
-  #dynamo:
-  #  container_name: humut-dynamo-local
-  #  image: amazon/dynamodb-local
-  #  command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
-  #  ports:
-  #    - "8000:8000"
-  #  volumes:
-  #    - type: bind
-  #      source: /usr/local/var/dynamo
-  #      target: /home/dynamodblocal/data/
-  #  environment:
-  #    - AWS_ACCESS_KEY_ID
-  #    - AWS_SECRET_ACCESS_KEY
-  #    - AWS_SESSION_TOKEN
-  #  networks:
-  #    humut-network:
-  #      ipv4_address: 172.16.2.98
+  dynamo:
+    container_name: humut-dynamo-local
+    image: amazon/dynamodb-local
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
+    ports:
+      - "8000:8000"
+    volumes:
+      - type: bind
+        source: /usr/local/var/dynamo
+        target: /home/dynamodblocal/data/
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+    networks:
+      humut-network:
+        ipv4_address: 172.16.2.98
   coordinator:
     container_name: hummut_coordinator
     build: "./coordinator"
@@ -35,18 +35,23 @@ services:
     networks:
       humut-network:
         ipv4_address: 172.16.2.99
+  worker0:
+    container_name: hummut_worker0
+    build: "./worker"
+    ports:
+      - "9001:9000"
+    environment:
+      - COORDINATOR_HOST=http://172.16.2.99:9000
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+      - WORKER_NUM=0
+      - ISLOCAL=true
+    networks:
+      humut-network:
+        ipv4_address: 172.16.2.4
 #  worker1:
 #    container_name: hummut_worker1
-#    build: "./worker"
-#    ports:
-#      - "9001:9000"
-#    environment:
-#      - COORDINATOR_HOST=http://172.16.2.99:9000
-#    networks:
-#      humut-network:
-#        ipv4_address: 172.16.2.4
-#  worker2:
-#    container_name: hummut_worker2
 #    build: "./worker"
 #    ports:
 #       - "9002:9000"
@@ -55,6 +60,8 @@ services:
 #      - AWS_ACCESS_KEY_ID
 #      - AWS_SECRET_ACCESS_KEY
 #      - AWS_SESSION_TOKEN
+#      - WORKER_NUM=1
+#      - ISLOCAL=true
 #     networks:
 #       humut-network:
 #         ipv4_address: 172.16.2.3

@@ -8,58 +8,75 @@ AWS.config.update({
 const dynamodb = new AWS.DynamoDB();
 
 const ITEM_TABLE_NAME = 'Item';
-const LIMIT = 5;
+const PRICE_TABLE_NAME = 'Price';
+const LIMIT = 1;
 const TOTAL_SEGMENTS = 2;
 
-const test = () => new Promise((resolve, reject) => {
-  dynamodb.listTables({}, (err, data) => {
-    if (err) {
-      console.log(err, err.stack); reject(err);
-    } else { console.log(data); resolve(data); } // successful response
-  });
-});
 
-/* const getItems = () => {
-  // TODO query to DynamoDB
-  const items = [
-    'kwmobile-Enchufe-Adaptador-UK-EU-Adaptadores/dp/B07GS6H4MK/',
-    'LAND-FOX-Vestidos-Chaleco-Camisetas-Camisas/dp/B07CBHWPJ5/',
-    'POLP-Beb%C3%A9-Monos-Vaqueros-Fotografia/dp/B07H1DYSTK/',
-    'Enchufe-Inteligente-OxaOxe-Control-Temporizador/dp/B07KP7CXZ3/',
-    'Hama-108884-Adaptador-enchufe-el%C3%A9ctrico/dp/B00EJLTNAY/',
-  ];
-  return items;
-}; */
-
-const getItems = ({ Segment, LastKey }) => new Promise((resolve, reject) => {
+const getItems = ({ segment, lastKey }) => new Promise((resolve, reject) => {
   const params = {
     TableName: ITEM_TABLE_NAME,
     Limit: LIMIT,
-    Segment,
+    Segment: segment,
     TotalSegments: TOTAL_SEGMENTS,
-    ExclusiveStartKey: LastKey,
+    ExclusiveStartKey: lastKey,
   };
+  console.log(params);
   dynamodb.scan(params, (err, data) => {
     if (err) reject(err);
     else if (data.Count > 0) {
       const payload = {
         items: [],
-        lastKey: data.LastEvaluatedKey,
+        lastKey: (data.LastEvaluatedKey) ? Buffer.from(JSON.stringify(data.LastEvaluatedKey)).toString('base64') : null,
       };
       data.Items.forEach((item) => {
         const unmarshalled = AWS.DynamoDB.Converter.unmarshall(item);
         payload.items.push(unmarshalled);
       });
+      resolve(payload);
     } else resolve({ items: [], lastKey: null });
   });
 });
 
-const updateItem = () => {
+const updateItem = (item) => {
+  const ExpressionAttributeNames = {};
+  const ExpressionAttributeValues = {};
+  let UpdateExpression = 'SET ';
 
+  Object.keys(item).forEach((prop) => {
+    if (typeof item.prop === 'string') {
+      ExpressionAttributeNames[`#${prop.toUpperCase()}`] = prop;
+      ExpressionAttributeValues[`:${prop.toLowerCase()}`] = { S: item.prop };
+      UpdateExpression += `#${prop.toUpperCase()} = :${prop.toLowerCase()}, `;
+    } else if (typeof item.prop === 'number') {
+      // TODO
+    }
+    // TODO others types
+  });
+
+  UpdateExpression = UpdateExpression.substring(0, UpdateExpression.length - 2);
+
+  const params = {
+    ExpressionAttributeNames,
+    ExpressionAttributeValues,
+    Key: {
+      url: {
+        S: item.url,
+      },
+    },
+    ReturnConsumedCapacity: 'NONE',
+    ReturnItemCollectionMetrics: 'NONE',
+    ReturnValues: 'NONE',
+    TableName: ITEM_TABLE_NAME,
+    UpdateExpression,
+  };
+  dynamodb.updateItem(params, (err, data) => {
+    if (err) console.log(err, err.stack); // an error occurred
+    else console.log(data); //
+  });
 };
 
 module.exports = {
   getItems,
   updateItem,
-  test,
 };

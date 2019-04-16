@@ -10,8 +10,6 @@ COPY . .
 # Install packages required
 RUN npm i
 
-RUN ls node_modules | grep express
-
 ################################## ENTRYPOINT ##################################
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod 775 /usr/local/bin/entrypoint.sh

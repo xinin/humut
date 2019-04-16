@@ -9,7 +9,13 @@ const concurrency = 1;
 
 const aux = async (item) => {
   try {
-    return (await crawl(item));
+    console.log("CRAWLED "+item.url)
+    const itemUpdated = await crawl(item.url);
+    // console.log(itemUpdated);
+
+    // TODO calculate diff between item and itemUpdated and return it
+    
+    return itemUpdated;
   } catch (e) {
     console.log(`ERR on ${item}`);
     return e;
@@ -32,9 +38,8 @@ const execute = lastKey => new Promise(async (resolve, reject) => {
   }
 });
 
-
 const start = async () => {
-  let lastKey;
+  let lastKey = null;
   while (true) {
     console.log(`----- ${lastKey} -----`);
     lastKey = await execute(lastKey);

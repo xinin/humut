@@ -1,5 +1,8 @@
 {
     "coordinator": {
         "uri": "http://localhost:9000"
+    },
+    "worker": {
+        "num": 0
     }
 }
