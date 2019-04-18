@@ -1,4 +1,5 @@
 const request = require('request');
+const _ = require('lodash');
 
 const AMAZON_URI = 'https://www.amazon.es/';
 
@@ -73,10 +74,18 @@ const pushItems = items => new Promise((resolve, reject) => {
   }
 });
 
+const diff = (object, base) => _.transform(object, (result, value, key) => {
+  const r = result;
+  if (!_.isEqual(value, base[key])) {
+    r[key] = (_.isObject(value) && _.isObject(base[key])) ? diff(value, base[key]) : value;
+  }
+});
+
 module.exports = {
   AMAZON_URI,
   cleanUri,
   getItems,
   pushItems,
   loadConfig,
+  diff,
 };

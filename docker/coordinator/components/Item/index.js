@@ -38,20 +38,18 @@ const getItems = ({ segment, lastKey }) => new Promise((resolve, reject) => {
   });
 });
 
-const updateItem = (item) => {
+const updateItem = item => new Promise((resolve, reject) => {
   const ExpressionAttributeNames = {};
   const ExpressionAttributeValues = {};
   let UpdateExpression = 'SET ';
 
-  Object.keys(item).forEach((prop) => {
-    if (typeof item.prop === 'string') {
-      ExpressionAttributeNames[`#${prop.toUpperCase()}`] = prop;
-      ExpressionAttributeValues[`:${prop.toLowerCase()}`] = { S: item.prop };
-      UpdateExpression += `#${prop.toUpperCase()} = :${prop.toLowerCase()}, `;
-    } else if (typeof item.prop === 'number') {
-      // TODO
-    }
-    // TODO others types
+  const marshalled = AWS.DynamoDB.Converter.marshall(item);
+  delete marshalled.url;
+
+  Object.keys(marshalled).forEach((prop) => {
+    ExpressionAttributeNames[`#${prop.toUpperCase()}`] = prop;
+    UpdateExpression += `#${prop.toUpperCase()} = :${prop.toLowerCase()}, `;
+    ExpressionAttributeValues[`:${prop.toLowerCase()}`] = marshalled[prop];
   });
 
   UpdateExpression = UpdateExpression.substring(0, UpdateExpression.length - 2);
@@ -70,11 +68,11 @@ const updateItem = (item) => {
     TableName: ITEM_TABLE_NAME,
     UpdateExpression,
   };
-  dynamodb.updateItem(params, (err, data) => {
-    if (err) console.log(err, err.stack); // an error occurred
-    else console.log(data); //
+  dynamodb.updateItem(params, (err) => {
+    if (err) reject(err);
+    else resolve();
   });
-};
+});
 
 module.exports = {
   getItems,

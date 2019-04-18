@@ -1,7 +1,9 @@
 
 const PromiseBlue = require('bluebird');
 const { crawl } = require('./class/crawler');
-const { getItems, pushItems, loadConfig } = require('./class/utils');
+const {
+  getItems, pushItems, loadConfig, diff,
+} = require('./class/utils');
 
 loadConfig(require('./config.json'));
 
@@ -9,13 +11,18 @@ const concurrency = 1;
 
 const aux = async (item) => {
   try {
-    console.log("CRAWLED "+item.url)
+    console.log(`CRAWLED ${item.url}`);
     const itemUpdated = await crawl(item.url);
-    // console.log(itemUpdated);
+    const differences = Object.keys(diff(itemUpdated, item));
+    const infoToUpdate = { // We need the item ID (url)
+      url: item.url,
+    };
+    differences.forEach((key) => {
+      infoToUpdate[key] = itemUpdated[key];
+    });
+    infoToUpdate.price = itemUpdated.price; // Price is mandatory
 
-    // TODO calculate diff between item and itemUpdated and return it
-    
-    return itemUpdated;
+    return infoToUpdate;
   } catch (e) {
     console.log(`ERR on ${item}`);
     return e;

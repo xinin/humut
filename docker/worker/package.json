@@ -12,6 +12,7 @@
   "dependencies": {
     "bluebird": "^3.5.3",
     "cheerio": "^1.0.0-rc.2",
+    "lodash": "^4.17.11",
     "puppeteer": "^1.11.0",
     "request": "^2.88.0"
   }
