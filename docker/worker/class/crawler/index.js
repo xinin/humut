@@ -1,10 +1,11 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+const _ = require('lodash');
 
 const { cleanUri, AMAZON_URI } = require('../utils');
 
 const crawl = uri => new Promise(async (resolve, reject) => {
-  const data = { id: uri };
+  const data = {};
   try {
     const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
     const page = await browser.newPage();
@@ -41,34 +42,82 @@ const crawl = uri => new Promise(async (resolve, reject) => {
     const content = await page.content();
     const $ = cheerio.load(content);
     data.updated = Date.now();
-    data.title = $('#productTitle').text().trim();
     try {
-      data.keywords = $('head > meta[name=keywords]').attr('content').split(',');
+      data.title = $('#productTitle').text().trim();
     } catch (e) {
-      data.keywords = [];
+      data.title = null;
     }
-    data.image = $('#landingImage').attr('data-old-hires');
-    data.price = $('#priceblock_ourprice').text().replace('EUR ', '');
-    data.rate = ($('#acrPopover').attr('title')) ? $('#acrPopover').attr('title').match(/[^\s]+/)[0] : 0;
-    data.description = [];
-    $('#featurebullets_feature_div > #feature-bullets > ul > li').each((i, li) => {
-      data.description.push($(li).text().trim());
-    });
-    data.details = {};
-    $('#prodDetails > div.wrapper.ESlocale > div.column.col1 > div > div.content.pdClearfix > div > div > table > tbody > tr').each((i, tr) => {
-      const label = $(tr).find('td.label').text().trim();
-      const value = $(tr).find('td.value').text().trim();
-      if (label && value) data.details[label] = value;
-    });
-    data.categories = [];
-    $('#wayfinding-breadcrumbs_feature_div > ul > li:not(.a-breadcrumb-divider)').each((i, li) => {
-      data.categories.push($(li).find('span > a').text().trim());
-    });
-    data.related = [];
-    $('#anonCarousel3 > ol > li').each((i, li) => {
-      const href = $(li).find('div > a.a-link-normal').attr('href');
-      data.related.push(cleanUri(href));
-    });
+    try {
+      data.keywords = $('head > meta[name=keywords]').attr('content').split(/[,|]/);
+      data.keywords = _.compact(data.keywords);
+      if (data.keywords.length === 0) data.keywords = null;
+    } catch (e) {
+      data.keywords = null;
+    }
+    try {
+      data.image = $('#landingImage').attr('data-old-hires');
+    } catch (e) {
+      data.image = null;
+    }
+    try {
+      // TODO hacer un buen cast a num
+      data.price = $('#priceblock_ourprice').text().replace('EUR ', '');
+    } catch (e) {
+      data.price = -1;
+    }
+    try {
+      data.rate = ($('#acrPopover').attr('title')) ? $('#acrPopover').attr('title').match(/[^\s]+/)[0] : 0;
+    } catch (e) {
+      data.rate = null;
+    }
+    try {
+      data.description = [];
+      $('#featurebullets_feature_div > #feature-bullets > ul > li').each((_i, li) => {
+        data.description.push($(li).text().trim());
+      });
+      data.description = _.compact(data.description);
+      if (data.description.length === 0) data.description = null;
+    } catch (e) {
+      data.description = null;
+    }
+
+    try {
+      data.details = {};
+      $('#prodDetails > div.wrapper.ESlocale > div.column.col1 > div > div.content.pdClearfix > div > div > table > tbody > tr').each((i, tr) => {
+        const label = $(tr).find('td.label').text().trim();
+        const value = $(tr).find('td.value').text().trim();
+        if (label && value) data.details[label] = value;
+      });
+    } catch (e) {
+      data.details = null;
+    }
+
+    try {
+      data.categories = [];
+      $('#wayfinding-breadcrumbs_feature_div > ul > li:not(.a-breadcrumb-divider)').each((i, li) => {
+        data.categories.push($(li).find('span > a').text().trim());
+      });
+      data.categories = _.compact(data.categories);
+      if (data.categories.length === 0) data.categories = null;
+    } catch (e) {
+      data.categories = null;
+    }
+
+
+    try {
+      data.related = [];
+      $('#anonCarousel3 > ol > li').each((i, li) => {
+        const href = $(li).find('div > a.a-link-normal').attr('href');
+        if (!href.includes('picassoRedirect.html')) {
+          data.related.push(cleanUri(href));
+        }
+      });
+      data.related = _.compact(data.related);
+      if (data.related.length === 0) data.related = null;
+    } catch (e) {
+      data.related = null;
+    }
+
     await browser.close();
     resolve(data);
   } catch (e) {

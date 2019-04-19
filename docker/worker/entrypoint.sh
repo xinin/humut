@@ -12,7 +12,7 @@ echo "🐋  Starting ..."
 if [ ! -z "$ISLOCAL" ];
 then
     echo "NODEMON"
-    npm i -g nodemon
+    #npm i -g nodemon
     nodemon index.js
 else
     node index.js

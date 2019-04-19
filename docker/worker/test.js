@@ -29,9 +29,7 @@ const son = {
   title: 'MI PERRO JUAN',
   updated: 123345354345,
   keywords: ['a', 'b', 'c'],
-  a: {
-    a: 1,
-  },
+  a: null,
 };
 
 

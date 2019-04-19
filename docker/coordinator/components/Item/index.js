@@ -74,7 +74,33 @@ const updateItem = item => new Promise((resolve, reject) => {
   });
 });
 
+const clean = (item) => {
+  const cleaned = item;
+  Object.keys(cleaned).forEach((prop) => {
+    if (!cleaned[prop]) {
+      delete cleaned[prop];
+    } else if (typeof cleaned[prop] === 'string' && cleaned[prop].length === 0) {
+      delete cleaned[prop];
+    } else if (Array.isArray(cleaned[prop]) && cleaned[prop].length === 0) {
+      delete cleaned[prop];
+    }
+  });
+  return cleaned;
+};
+
+const isValid = (item) => {
+  // console.log(!item, !item.url, !item.url.length, !item.updated, !item.title, !item.title.length, !item.price);
+  if (!item
+    || !item.url || !item.url.length
+    || !item.updated
+    || !item.title || !item.title.length
+    || !item.price) { return false; }
+  return true;
+};
+
 module.exports = {
   getItems,
   updateItem,
+  clean,
+  isValid,
 };

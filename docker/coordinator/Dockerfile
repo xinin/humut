@@ -9,7 +9,7 @@ COPY . .
 
 # Install packages required
 RUN npm i
-
+RUN npm i -g nodemon
 ################################## ENTRYPOINT ##################################
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod 775 /usr/local/bin/entrypoint.sh
