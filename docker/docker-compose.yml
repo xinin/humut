@@ -15,21 +15,19 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
     networks:
-      humut-network:
-        ipv4_address: 172.16.2.98
+      - humut-network
   dynamoUI: 
     container_name: dynamo-ui
     image: aaronshaf/dynamodb-admin
     ports:
       - "8001:8001"
     environment:
-      - DYNAMO_ENDPOINT=http://172.16.2.98:8000
+      - DYNAMO_ENDPOINT=http://dynamo:8000
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
     networks:
-      humut-network:
-        ipv4_address: 172.16.2.97
+      - humut-network
   coordinator:
     container_name: hummut_coordinator
     build: "./coordinator"
@@ -43,41 +41,38 @@ services:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
-      - DYNAMO_HOST=http://172.16.2.98:8000
+      - DYNAMO_HOST=http://dynamo:8000
       - ISLOCAL=true
     networks:
-      humut-network:
-        ipv4_address: 172.16.2.99
+      - humut-network
   worker0:
     container_name: hummut_worker0
     build: "./worker"
     ports:
       - "9090:9000"
     environment:
-      - COORDINATOR_HOST=http://172.16.2.99:9000
+      - COORDINATOR_HOST=http://coordinator:9000
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
       - AWS_SESSION_TOKEN
       - WORKER_NUM=0
       - ISLOCAL=true
     networks:
-      humut-network:
-        ipv4_address: 172.16.2.4
-#  worker1:
-#    container_name: hummut_worker1
-#    build: "./worker"
-#    ports:
-#       - "9091:9000"
-#    environment:
-#      - COORDINATOR_HOST=http://172.16.2.99:9000
-#      - AWS_ACCESS_KEY_ID
-#      - AWS_SECRET_ACCESS_KEY
-#      - AWS_SESSION_TOKEN
-#      - WORKER_NUM=1
-#      - ISLOCAL=true
-#     networks:
-#       humut-network:
-#         ipv4_address: 172.16.2.3
+      - humut-network
+  worker1:
+    container_name: hummut_worker1
+    build: "./worker"
+    ports:
+       - "9091:9000"
+    environment:
+      - COORDINATOR_HOST=http://coordinator:9000
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+      - WORKER_NUM=1
+      - ISLOCAL=true
+    networks:
+      - humut-network
 networks:
   humut-network:
     driver: bridge
