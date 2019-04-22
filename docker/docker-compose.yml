@@ -17,6 +17,19 @@ services:
     networks:
       humut-network:
         ipv4_address: 172.16.2.98
+  dynamoUI: 
+    container_name: dynamo-ui
+    image: aaronshaf/dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://172.16.2.98:8000
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_SESSION_TOKEN
+    networks:
+      humut-network:
+        ipv4_address: 172.16.2.97
   coordinator:
     container_name: hummut_coordinator
     build: "./coordinator"
