@@ -5,7 +5,7 @@ WORKDIR /app
 ################################## APP SETUP ##################################
 
 COPY . .
-#RUN rm -rf /app/node_modules
+RUN rm -rf /app/node_modules/
 
 # Install packages required
 RUN npm i
@@ -16,7 +16,3 @@ RUN chmod 775 /usr/local/bin/entrypoint.sh
 ENTRYPOINT [ "entrypoint.sh" ]
 
 EXPOSE 9000
-
-
-
-

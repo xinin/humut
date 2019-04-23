@@ -1,4 +1,3 @@
-
 const PromiseBlue = require('bluebird');
 const { crawl } = require('./class/crawler');
 const {
@@ -45,11 +44,18 @@ const execute = lastKey => new Promise(async (resolve, reject) => {
   }
 });
 
+
+const wait = time => new Promise((resolve) => {
+  console.log('WAITING');
+  setTimeout(() => resolve(), time);
+});
+
 const start = async () => {
   let lastKey = null;
   while (true) {
     console.log(`----- ${lastKey} -----`);
     lastKey = await execute(lastKey);
+    await wait(5000);
     console.log('-------------');
   }
 };

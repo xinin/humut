@@ -19,11 +19,6 @@ exports.getItems = async (req, res) => {
   }
 };
 
-
-const wait = time => new Promise((resolve) => {
-  setTimeout(() => resolve, time);
-});
-
 exports.createItems = async (req, res) => {
   const { body: items } = req;
 
@@ -35,7 +30,6 @@ exports.createItems = async (req, res) => {
       console.log(cleaned);
       promises.push(Item.updateItem(item));
     }
-    await wait(1000);
   });
 
   try {

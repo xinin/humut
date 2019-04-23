@@ -5,7 +5,7 @@ WORKDIR /app
 ################################## APP SETUP ##################################
 
 COPY . .
-RUN rm -rf /app/node_modules/puppeteer
+RUN rm -rf /app/node_modules/
 
 # Install packages required
 RUN npm i

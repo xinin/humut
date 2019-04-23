@@ -16,6 +16,11 @@ const changes = (object, base) => _.transform(object, (result, value, key) => {
   }
 });
 
+
+const mywait = time => new Promise((resolve) => {
+  setTimeout(() => resolve(), time);
+});
+
 const base = {
   uri: 'a/',
   keywords: ['a', 'b'],
@@ -32,6 +37,19 @@ const son = {
   a: null,
 };
 
+const main = async () => {
+  try {
+    // console.log(difference(son, base));
+    console.log('a');
+    const a = await mywait(1000);
+    console.log(a);
+    console.log('b');
+    // console.log(changes(son, base));
+    console.log('DONE');
+  } catch (E) {
+    console.log(E);
+  }
+};
 
-console.log(difference(son, base));
-console.log(changes(son, base));
+
+main();

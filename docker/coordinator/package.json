@@ -17,7 +17,6 @@
     "express": "^4.16.4",
     "helmet": "^3.15.0",
     "method-override": "^3.0.0",
-    "nodemon": "^1.18.11",
     "querystring": "^0.2.0",
     "uniqid": "^5.0.3"
   }

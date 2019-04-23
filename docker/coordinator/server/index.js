@@ -18,7 +18,7 @@ app.use(helmet.frameguard()); // frameguard to prevent clickjacking
 app.use(helmet.xssFilter()); // xssFilter adds some small XSS protections
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.json({ limit: '5mb' }));
 app.use(methodOverride());
 app.use(cookieParser());
 app.use(Utils.middleware);

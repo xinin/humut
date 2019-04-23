@@ -1,6 +1,8 @@
-version: '3.2'
+version: '3.7'
 services:
   dynamo:
+    labels: 
+      color: red
     container_name: humut-dynamo-local
     image: amazon/dynamodb-local
     command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/
@@ -16,7 +18,9 @@ services:
       - AWS_SESSION_TOKEN
     networks:
       - humut-network
-  dynamoUI: 
+  dynamoUI:
+    labels: 
+      color: yellow 
     container_name: dynamo-ui
     image: aaronshaf/dynamodb-admin
     ports:
@@ -29,14 +33,15 @@ services:
     networks:
       - humut-network
   coordinator:
+    labels: 
+      color: purple
     container_name: hummut_coordinator
     build: "./coordinator"
     ports:
       - "9099:9000"
     volumes:
-      - type: bind
-        source: ./coordinator
-        target: /app
+      - './coordinator:/app'
+      - /app/node_modules/
     environment:
       - AWS_ACCESS_KEY_ID
       - AWS_SECRET_ACCESS_KEY
@@ -46,8 +51,13 @@ services:
     networks:
       - humut-network
   worker0:
+    labels: 
+      color: blue
     container_name: hummut_worker0
     build: "./worker"
+    volumes:
+      - './worker:/app'
+      - /app/node_modules/
     ports:
       - "9090:9000"
     environment:
@@ -60,8 +70,13 @@ services:
     networks:
       - humut-network
   worker1:
+    labels: 
+      color: green
     container_name: hummut_worker1
     build: "./worker"
+    volumes:
+      - './worker:/app'
+      - /app/node_modules/
     ports:
        - "9091:9000"
     environment:
