@@ -12,7 +12,6 @@ const PRICE_TABLE_NAME = 'Price';
 const LIMIT = 1;
 const TOTAL_SEGMENTS = 2;
 
-
 const getItems = ({ segment, lastKey }) => new Promise((resolve, reject) => {
   const params = {
     TableName: ITEM_TABLE_NAME,
@@ -20,8 +19,17 @@ const getItems = ({ segment, lastKey }) => new Promise((resolve, reject) => {
     Segment: segment,
     TotalSegments: TOTAL_SEGMENTS,
     ExclusiveStartKey: lastKey,
+    FilterExpression: '#unavailable <> :t',
+    ExpressionAttributeNames: {
+      '#unavailable': 'unavailable',
+    },
+    ExpressionAttributeValues: {
+      ':t': {
+        BOOL: true,
+      },
+    },
   };
-  console.log(params);
+  // console.log(params);
   dynamodb.scan(params, (err, data) => {
     if (err) reject(err);
     else if (data.Count > 0) {
@@ -89,7 +97,9 @@ const clean = (item) => {
 };
 
 const isValid = (item) => {
-  // console.log(!item, !item.url, !item.url.length, !item.updated, !item.title, !item.title.length, !item.price);
+  if ((item && item.error) || (item && item.unavailable)) { // Item with error
+    return true;
+  }
   if (!item
     || !item.url || !item.url.length
     || !item.updated

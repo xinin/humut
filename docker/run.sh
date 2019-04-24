@@ -1,7 +1,5 @@
 #https://github.com/nojhan/colout
 
-root=$(pwd)
-
 function up {
     docker-compose up \
     | colout "humut-dynamo-local" white \

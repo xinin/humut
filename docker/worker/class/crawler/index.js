@@ -4,6 +4,16 @@ const _ = require('lodash');
 
 const { cleanUri, AMAZON_URI } = require('../utils');
 
+const userAgents = [
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/67.0.3372.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0) Gecko/20100101 Firefox/68.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15',
+  'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko; Google Web Preview) Chrome/41.0.2272.118 Safari/537.36',
+];
+
 const crawl = uri => new Promise(async (resolve, reject) => {
   const data = {};
   try {
@@ -27,12 +37,13 @@ const crawl = uri => new Promise(async (resolve, reject) => {
       if (url === AMAZON_URI + uri) {
         console.log('response url:', url, 'status:', status);
         if (status === 404) {
+          data.error = 404;
           reject(data);
         }
       }
     });
 
-    await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/67.0.3372.0 Safari/537.36');
+    await page.setUserAgent(userAgents[Math.floor(Math.random() * userAgents.length)]);
     await page.setViewport({ height: 3000, width: 600 });
 
     await page.goto(`${AMAZON_URI}${uri}`);
@@ -122,6 +133,7 @@ const crawl = uri => new Promise(async (resolve, reject) => {
     resolve(data);
   } catch (e) {
     console.log('EXCEPTION', e);
+    data.error = e;
     reject(data);
   }
 });

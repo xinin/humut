@@ -8,6 +8,7 @@ loadConfig(require('./config.json'));
 
 const concurrency = 1;
 
+
 const aux = async (item) => {
   try {
     console.log(`CRAWLED ${item.url}`);
@@ -23,7 +24,10 @@ const aux = async (item) => {
 
     return infoToUpdate;
   } catch (e) {
-    console.log(`ERR on ${item}`);
+    console.log(`ERR on ${JSON.stringify(item)}`);
+    if (e.error === 404) {
+      return { ...item, ...{ unavailable: true } };
+    }
     return e;
   }
 };
