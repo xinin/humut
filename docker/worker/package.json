@@ -1,13 +1,13 @@
 {
   "name": "worker",
   "version": "1.0.0",
-  "description": "",
+  "description": "Hummut Worker",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "",
+  "author": "Diego Prieto Torrijos",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.3",

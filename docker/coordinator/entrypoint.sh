@@ -10,4 +10,4 @@ else
     node server/index.js
 fi
 
-exit 0;
+#exit 0;
