@@ -72,9 +72,13 @@ const crawl = uri => new Promise(async (resolve, reject) => {
     }
     try {
       // TODO hacer un buen cast a num
-      data.price = $('#priceblock_ourprice').text().replace('EUR ', '');
+      let aux = $('#priceblock_ourprice').text().replace(/EUR|\$|£|\s/g, '').replace(/,/g, '.');
+      aux = aux.split('-');
+      data.pricelower = aux[0];
+      data.pricehigher = (aux.length > 1) ? aux[1] : aux[0];
     } catch (e) {
-      data.price = -1;
+      data.pricelower = -1;
+      data.pricehigher = -1;
     }
     try {
       data.rate = ($('#acrPopover').attr('title')) ? $('#acrPopover').attr('title').match(/[^\s]+/)[0] : 0;
@@ -113,7 +117,6 @@ const crawl = uri => new Promise(async (resolve, reject) => {
     } catch (e) {
       data.categories = null;
     }
-
 
     try {
       data.related = [];

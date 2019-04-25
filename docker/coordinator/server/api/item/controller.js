@@ -28,6 +28,14 @@ exports.createItems = async (req, res) => {
     const cleaned = Item.clean(item);
     if (Item.isValid(cleaned)) {
       console.log(cleaned);
+      if (cleaned.related) {
+        cleaned.related.forEach((r) => {
+          promises.push(Item.addRelated(r));
+        });
+      }
+      if (cleaned.pricelower && cleaned.pricehigher) {
+        promises.push(Item.addNewPrice(item));
+      }
       promises.push(Item.updateItem(item));
     }
   });

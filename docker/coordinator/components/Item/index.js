@@ -9,7 +9,7 @@ const dynamodb = new AWS.DynamoDB();
 
 const ITEM_TABLE_NAME = 'Item';
 const PRICE_TABLE_NAME = 'Price';
-const LIMIT = 1;
+const LIMIT = 2;
 const TOTAL_SEGMENTS = 2;
 
 const getItems = ({ segment, lastKey }) => new Promise((resolve, reject) => {
@@ -103,14 +103,79 @@ const isValid = (item) => {
   if (!item
     || !item.url || !item.url.length
     || !item.updated
-    || !item.title || !item.title.length
-    || !item.price) { return false; }
+    || !item.title || !item.title.length) { return false; }
   return true;
 };
+
+const addRelated = url => new Promise((resolve, reject) => {
+  const params = {
+    TableName: ITEM_TABLE_NAME,
+    Item: {
+      url: {
+        S: url,
+      },
+    },
+    ExpressionAttributeNames: {
+      '#url': 'url',
+    },
+    ConditionExpression: 'attribute_not_exists(#url)',
+    ReturnConsumedCapacity: 'NONE',
+    ReturnItemCollectionMetrics: 'NONE',
+    ReturnValues: 'NONE',
+  };
+  dynamodb.putItem(params, (err) => {
+    if (err) {
+      if (err.code === 'ConditionalCheckFailedException') {
+        resolve();
+      } else {
+        reject(err);
+      }
+    } else resolve();
+  });
+});
+
+const addNewPrice = item => new Promise((resolve, reject) => {
+  console.log(item);
+  const params = {
+    TableName: PRICE_TABLE_NAME,
+    Item: {
+      url: {
+        S: item.url,
+      },
+      timestamp: {
+        N: item.updated.toString(),
+      },
+      pricelower: {
+        N: item.pricelower,
+      },
+      pricehigher: {
+        N: item.pricehigher,
+      },
+    },
+    ExpressionAttributeNames: {
+      '#url': 'url',
+    },
+    ConditionExpression: 'attribute_not_exists(#url)',
+    ReturnConsumedCapacity: 'NONE',
+    ReturnItemCollectionMetrics: 'NONE',
+    ReturnValues: 'NONE',
+  };
+  dynamodb.putItem(params, (err) => {
+    if (err) {
+      if (err.code === 'ConditionalCheckFailedException') {
+        resolve();
+      } else {
+        reject(err);
+      }
+    } else resolve();
+  });
+});
 
 module.exports = {
   getItems,
   updateItem,
   clean,
   isValid,
+  addRelated,
+  addNewPrice,
 };

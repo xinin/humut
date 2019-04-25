@@ -8,7 +8,6 @@ loadConfig(require('./config.json'));
 
 const concurrency = 1;
 
-
 const aux = async (item) => {
   try {
     console.log(`CRAWLED ${item.url}`);
@@ -20,7 +19,7 @@ const aux = async (item) => {
     differences.forEach((key) => {
       infoToUpdate[key] = itemUpdated[key];
     });
-    infoToUpdate.price = itemUpdated.price; // Price is mandatory
+    // infoToUpdate.price = itemUpdated.price; // Price is mandatory
 
     return infoToUpdate;
   } catch (e) {
