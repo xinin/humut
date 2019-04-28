@@ -17,7 +17,11 @@ const userAgents = [
 const crawl = uri => new Promise(async (resolve, reject) => {
   const data = {};
   try {
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+    const options = [];
+    if (process.env.TOR_PROXY) {
+      options.push('--proxy-server=http://proxy:8118');
+    }
+    const browser = await puppeteer.launch({ args: [...options, ...['--no-sandbox']] });
     const page = await browser.newPage();
     await page.setRequestInterception(true);
 

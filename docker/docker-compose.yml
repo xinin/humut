@@ -1,5 +1,13 @@
 version: '3.7'
 services:
+  proxy:
+    image: dperson/torproxy
+    container_name: hummut_proxy
+    ports:
+      - "8118:8118"
+      - "9051:9050"
+    networks:
+      - humut-network
   dynamo:
     labels: 
       color: red
@@ -67,6 +75,7 @@ services:
       - AWS_SESSION_TOKEN
       - WORKER_NUM=0
       - ISLOCAL=true
+      - TOR_PROXY=http://proxy:8118
     networks:
       - humut-network
   worker1:
@@ -86,6 +95,7 @@ services:
       - AWS_SESSION_TOKEN
       - WORKER_NUM=1
       - ISLOCAL=true
+      - TOR_PROXY=http://proxy:8118
     networks:
       - humut-network
 networks:

@@ -53,6 +53,8 @@ const getItems = lastKey => new Promise((resolve, reject) => {
 const pushItems = items => new Promise((resolve, reject) => {
   const COORDINATOR_URI = JSON.parse(process.env.config).coordinator.uri;
 
+  console.log(items);
+
   const options = {
     url: `${COORDINATOR_URI}/item`,
     method: 'POST',

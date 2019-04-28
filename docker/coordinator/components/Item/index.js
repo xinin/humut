@@ -114,6 +114,9 @@ const addRelated = url => new Promise((resolve, reject) => {
       url: {
         S: url,
       },
+      inserted: {
+        N: Date.now().toString(),
+      },
     },
     ExpressionAttributeNames: {
       '#url': 'url',
