@@ -12,14 +12,22 @@ const aux = async (item) => {
   try {
     console.log(`CRAWLED ${item.url}`);
     const itemUpdated = await crawl(item.url);
-    const differences = Object.keys(diff(itemUpdated, item));
+
     const infoToUpdate = { // We need the item ID (url)
       url: item.url,
     };
+
+    if (itemUpdated.price) {
+      infoToUpdate.iteration = (item.iteration) ? item.iteration + 1 : 1;
+      infoToUpdate.average = (item.average) ? item.average + ((itemUpdated.price - item.average) / infoToUpdate.iteration) : itemUpdated.price;
+      infoToUpdate.average = Math.round(infoToUpdate.average * 100) / 100;
+      infoToUpdate.price = itemUpdated.price; // price always have to exists
+    }
+
+    const differences = Object.keys(diff(itemUpdated, item));
     differences.forEach((key) => {
       infoToUpdate[key] = itemUpdated[key];
     });
-    // infoToUpdate.price = itemUpdated.price; // Price is mandatory
 
     return infoToUpdate;
   } catch (e) {
@@ -33,11 +41,8 @@ const aux = async (item) => {
 
 const execute = lastKey => new Promise(async (resolve, reject) => {
   try {
-    // console.log('getItems', lastKey);
     const { items, lastKey: LK } = await getItems(lastKey);
-    // console.log('items', items, 'LK', lastKey);
     const crawled = await PromiseBlue.map(items, aux, { concurrency });
-    // console.log(crawled);
     await pushItems(crawled);
     resolve(LK);
   } catch (e) {
@@ -46,7 +51,6 @@ const execute = lastKey => new Promise(async (resolve, reject) => {
     reject(lastKey);
   }
 });
-
 
 const wait = time => new Promise((resolve) => {
   console.log('WAITING');

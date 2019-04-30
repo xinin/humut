@@ -9,7 +9,7 @@ const dynamodb = new AWS.DynamoDB();
 
 const ITEM_TABLE_NAME = 'Item';
 const PRICE_TABLE_NAME = 'Price';
-const LIMIT = 2;
+const LIMIT = 1;
 const TOTAL_SEGMENTS = 2;
 
 const getItems = ({ segment, lastKey }) => new Promise((resolve, reject) => {
@@ -85,7 +85,7 @@ const updateItem = item => new Promise((resolve, reject) => {
 const clean = (item) => {
   const cleaned = item;
   Object.keys(cleaned).forEach((prop) => {
-    if (!cleaned[prop]) {
+    if (cleaned[prop] === null || cleaned[prop] === undefined) {
       delete cleaned[prop];
     } else if (typeof cleaned[prop] === 'string' && cleaned[prop].length === 0) {
       delete cleaned[prop];
@@ -100,10 +100,7 @@ const isValid = (item) => {
   if ((item && item.error) || (item && item.unavailable)) { // Item with error
     return true;
   }
-  if (!item
-    || !item.url || !item.url.length
-    || !item.updated
-    || !item.title || !item.title.length) { return false; }
+  if (!item || !item.url || !item.url.length || !item.updated) { return false; }
   return true;
 };
 
@@ -116,6 +113,12 @@ const addRelated = url => new Promise((resolve, reject) => {
       },
       inserted: {
         N: Date.now().toString(),
+      },
+      iteration: {
+        N: 0,
+      },
+      average: {
+        N: 0,
       },
     },
     ExpressionAttributeNames: {
@@ -138,7 +141,6 @@ const addRelated = url => new Promise((resolve, reject) => {
 });
 
 const addNewPrice = item => new Promise((resolve, reject) => {
-  console.log(item);
   const params = {
     TableName: PRICE_TABLE_NAME,
     Item: {
@@ -148,11 +150,8 @@ const addNewPrice = item => new Promise((resolve, reject) => {
       timestamp: {
         N: item.updated.toString(),
       },
-      pricelower: {
-        N: item.pricelower,
-      },
-      pricehigher: {
-        N: item.pricehigher,
+      price: {
+        N: item.price,
       },
     },
     ExpressionAttributeNames: {

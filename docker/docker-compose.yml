@@ -51,9 +51,9 @@ services:
       - './coordinator:/app'
       - /app/node_modules/
     environment:
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - AWS_SESSION_TOKEN
+      - AWS_ACCESS_KEY_ID='TODO'
+      - AWS_SECRET_ACCESS_KEY='TODO'
+      - AWS_SESSION_TOKEN='TODO'
       - DYNAMO_HOST=http://dynamo:8000
       - ISLOCAL=true
     networks:
@@ -70,9 +70,6 @@ services:
       - "9090:9000"
     environment:
       - COORDINATOR_HOST=http://coordinator:9000
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - AWS_SESSION_TOKEN
       - WORKER_NUM=0
       - ISLOCAL=true
       - TOR_PROXY=http://proxy:8118
@@ -90,9 +87,6 @@ services:
        - "9091:9000"
     environment:
       - COORDINATOR_HOST=http://coordinator:9000
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - AWS_SESSION_TOKEN
       - WORKER_NUM=1
       - ISLOCAL=true
       - TOR_PROXY=http://proxy:8118

@@ -78,11 +78,11 @@ const crawl = uri => new Promise(async (resolve, reject) => {
       // TODO hacer un buen cast a num
       let aux = $('#priceblock_ourprice').text().replace(/EUR|\$|£|\s/g, '').replace(/,/g, '.');
       aux = aux.split('-');
-      data.pricelower = aux[0];
-      data.pricehigher = (aux.length > 1) ? aux[1] : aux[0];
+      [data.price] = aux;
+      // data.pricehigher = (aux.length > 1) ? aux[1] : aux[0];
     } catch (e) {
-      data.pricelower = -1;
-      data.pricehigher = -1;
+      data.price = -1;
+      // data.pricehigher = -1;
     }
     try {
       data.rate = ($('#acrPopover').attr('title')) ? $('#acrPopover').attr('title').match(/[^\s]+/)[0] : 0;
