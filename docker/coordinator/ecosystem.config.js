@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
-    name: 'worker',
-    script: '/app/index.js',
+    name: 'coordinator',
+    script: '/app/server/index.js',
     watch: true,
     ignore_watch: ['node_modules'],
   }],
